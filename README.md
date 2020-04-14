@@ -4,7 +4,7 @@
 
 Desafio baseado no template da Rocketseat.
 
-[Template](https://github.com/Rocketseat/bootcamp-gostack-desafios/tree/master/desafio-conceitos-nodejs)
+[Template](https://github.com/Rocketseat/bootcamp-gostack-desafios/tree/master/desafio-fundamentos-nodejs)
 
 ### Executar
 
