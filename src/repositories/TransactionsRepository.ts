@@ -26,29 +26,37 @@ class TransactionsRepository {
   public getBalance(): Balance {
     const { transactions } = this;
 
-    const income = transactions.reduce((sumIncome, transaction) => {
-      if (transaction.type === 'income') return sumIncome + transaction.value;
+    const balance = transactions.reduce(
+      (sum, transaction) => {
+        const { type, value } = transaction;
 
-      return sumIncome;
-    }, 0);
+        if (sum[type]) sum[type] += value;
+        else sum[type] = value;
 
-    const outcome = transactions.reduce((sumOutcome, transaction) => {
-      if (transaction.type === 'income') return sumOutcome + transaction.value;
+        return sum;
+      },
+      {
+        income: 0,
+        outcome: 0,
+        total: 0,
+      },
+    );
 
-      return sumOutcome;
-    }, 0);
+    balance.total = balance.income - balance.outcome;
 
-    const total = income - outcome;
-
-    return {
-      income,
-      outcome,
-      total,
-    };
+    return balance;
   }
 
   public create({ title, value, type }: CreateTransactionDTO): Transaction {
     const transaction = new Transaction({ title, value, type });
+    const balance = this.getBalance();
+
+    if (type === 'outcome' && value > balance.total) {
+      throw Error(
+        'Não foi possível realizar essa ação porquê o valor da transação é superior ao que você possui no caixa.',
+      );
+    }
+
     this.transactions.push(transaction);
 
     return transaction;
